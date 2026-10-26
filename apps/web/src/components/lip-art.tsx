@@ -1,0 +1,3 @@
+export function LipArt({color='currentColor',className=''}:{color?:string;className?:string}) {
+ return <svg className={className} viewBox="0 0 240 140" fill={color} aria-hidden="true"><path d="M12 65C48 58 65 19 95 25c12 2 16 13 25 13s14-11 25-13c31-6 49 33 83 40-28 3-46 10-68 10-17 0-27-5-40-5s-24 5-41 5c-22 0-40-7-67-10Z"/><path d="M13 72c39 8 66 14 107 14s68-6 107-14c-26 41-62 58-107 58S39 112 13 72Z"/><path fill="var(--paper)" opacity=".28" d="M71 33l12 31-4 2-13-28zm24-2 8 32-4 1-8-31zm49 0-8 32 4 1 8-31zm23 6-12 27 5 2 12-26zM72 89l9 29 5 2-10-30zm38 2 2 35h5l-3-35zm40-1-10 33 5-2 10-30z"/></svg>;
+}
