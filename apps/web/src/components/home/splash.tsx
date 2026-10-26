@@ -35,7 +35,7 @@ export function Splash({ onStart }: { onStart: () => void }) {
 				<p className="splash-sub">Find your lip soulmate.</p>
 
 				<div className="splash-foot">
-					<SlideToUnlock onUnlock={onStart} text="love at first swipe" />
+					<SlideToUnlock onUnlock={onStart} text="LOVE AT FIRST SWIPE" />
 				</div>
 			</div>
 		</section>

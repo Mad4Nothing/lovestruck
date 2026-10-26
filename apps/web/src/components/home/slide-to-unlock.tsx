@@ -1,12 +1,12 @@
 import { useState, useRef, useCallback } from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 
 interface SlideToUnlockProps {
 	onUnlock: () => void;
 	text?: string;
 }
 
-export function SlideToUnlock({ onUnlock, text = 'love at first swipe' }: SlideToUnlockProps) {
+export function SlideToUnlock({ onUnlock, text = 'LOVE AT FIRST SWIPE' }: SlideToUnlockProps) {
 	const [dragX, setDragX] = useState(0);
 	const [isDragging, setIsDragging] = useState(false);
 	const [unlocked, setUnlocked] = useState(false);
@@ -16,21 +16,23 @@ export function SlideToUnlock({ onUnlock, text = 'love at first swipe' }: SlideT
 
 	const getMaxDrag = useCallback(() => {
 		if (!trackRef.current) return 220;
-		// 48px thumb + 4px left + 4px right = 56px
-		return Math.max(60, trackRef.current.clientWidth - 56);
+		// 48px thumb + 5px right + 5px left = 58px
+		return Math.max(60, trackRef.current.clientWidth - 58);
 	}, []);
 
 	const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
 		if (unlocked) return;
 		setIsDragging(true);
-		startX.current = e.clientX - currentX.current;
+		// Dragging to the left: delta = startX - clientX
+		startX.current = e.clientX + currentX.current;
 		e.currentTarget.setPointerCapture(e.pointerId);
 	};
 
 	const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
 		if (!isDragging || unlocked) return;
 		const max = getMaxDrag();
-		const nextX = Math.min(Math.max(0, e.clientX - startX.current), max);
+		const delta = startX.current - e.clientX;
+		const nextX = Math.min(Math.max(0, delta), max);
 		currentX.current = nextX;
 		setDragX(nextX);
 	};
@@ -43,24 +45,32 @@ export function SlideToUnlock({ onUnlock, text = 'love at first swipe' }: SlideT
 				e.currentTarget.releasePointerCapture(e.pointerId);
 			}
 		} catch {
-			// ignore pointer capture release errors
+			// ignore pointer capture release error
 		}
 
 		const max = getMaxDrag();
-		// If dragged past 65% of track, complete unlock!
-		if (currentX.current >= max * 0.65) {
+		// If dragged 60% or more toward the left, complete unlock!
+		if (currentX.current >= max * 0.6) {
 			setUnlocked(true);
 			setDragX(max);
 			currentX.current = max;
 			onUnlock();
 		} else {
-			// Spring back
+			// Spring back to the right
 			currentX.current = 0;
 			setDragX(0);
 		}
 	};
 
-	const max = trackRef.current ? Math.max(60, trackRef.current.clientWidth - 56) : 220;
+	const triggerUnlock = () => {
+		if (unlocked || isDragging) return;
+		const max = getMaxDrag();
+		setUnlocked(true);
+		setDragX(max);
+		setTimeout(onUnlock, 250);
+	};
+
+	const max = trackRef.current ? Math.max(60, trackRef.current.clientWidth - 58) : 220;
 	const progress = max > 0 ? Math.min(1, dragX / max) : 0;
 	const textOpacity = Math.max(0, 1 - progress * 1.5);
 
@@ -70,18 +80,12 @@ export function SlideToUnlock({ onUnlock, text = 'love at first swipe' }: SlideT
 			className="slide-unlock-track"
 			role="button"
 			tabIndex={0}
-			aria-label={`Slide to unlock: ${text}`}
-			onClick={() => {
-				// Also allow simple click to unlock for accessibility
-				if (!unlocked && !isDragging && dragX === 0) {
-					// only if not dragging
-				}
-			}}
+			aria-label={`Slide right to left to unlock: ${text}`}
+			onClick={triggerUnlock}
 			onKeyDown={(e) => {
-				if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight') {
+				if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowLeft') {
 					e.preventDefault();
-					setUnlocked(true);
-					onUnlock();
+					triggerUnlock();
 				}
 			}}
 		>
@@ -92,7 +96,7 @@ export function SlideToUnlock({ onUnlock, text = 'love at first swipe' }: SlideT
 			<div
 				className={`slide-unlock-thumb ${isDragging ? 'is-dragging' : ''}`}
 				style={{
-					transform: `translateX(${dragX}px)`,
+					transform: `translateX(-${dragX}px)`,
 					transition: isDragging ? 'none' : 'transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1)',
 				}}
 				onPointerDown={handlePointerDown}
@@ -100,7 +104,7 @@ export function SlideToUnlock({ onUnlock, text = 'love at first swipe' }: SlideT
 				onPointerUp={handlePointerEnd}
 				onPointerCancel={handlePointerEnd}
 			>
-				<ChevronRight size={22} className="slide-unlock-icon" />
+				<ChevronLeft size={22} className="slide-unlock-icon" />
 			</div>
 		</div>
 	);
