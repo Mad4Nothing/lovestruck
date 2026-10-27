@@ -16,8 +16,8 @@ export function SlideToUnlock({ onUnlock, text = 'LOVE AT FIRST SWIPE' }: SlideT
 
 	const getMaxDrag = useCallback(() => {
 		if (!trackRef.current) return 220;
-		// 48px thumb + 5px right + 5px left = 58px
-		return Math.max(60, trackRef.current.clientWidth - 58);
+		// 54px thumb + 5px right + 5px left = 64px
+		return Math.max(60, trackRef.current.clientWidth - 64);
 	}, []);
 
 	const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -54,7 +54,7 @@ export function SlideToUnlock({ onUnlock, text = 'LOVE AT FIRST SWIPE' }: SlideT
 			setUnlocked(true);
 			setDragX(max);
 			currentX.current = max;
-			onUnlock();
+			setTimeout(onUnlock, 80);
 		} else {
 			// Spring back to the right
 			currentX.current = 0;
@@ -67,17 +67,17 @@ export function SlideToUnlock({ onUnlock, text = 'LOVE AT FIRST SWIPE' }: SlideT
 		const max = getMaxDrag();
 		setUnlocked(true);
 		setDragX(max);
-		setTimeout(onUnlock, 250);
+		setTimeout(onUnlock, 120);
 	};
 
-	const max = trackRef.current ? Math.max(60, trackRef.current.clientWidth - 58) : 220;
+	const max = trackRef.current ? Math.max(60, trackRef.current.clientWidth - 64) : 220;
 	const progress = max > 0 ? Math.min(1, dragX / max) : 0;
 	const textOpacity = Math.max(0, 1 - progress * 1.5);
 
 	return (
 		<div
 			ref={trackRef}
-			className="slide-unlock-track"
+			className={`slide-unlock-track ${unlocked ? 'is-unlocked' : ''}`}
 			role="button"
 			tabIndex={0}
 			aria-label={`Slide right to left to unlock: ${text}`}
@@ -94,17 +94,17 @@ export function SlideToUnlock({ onUnlock, text = 'LOVE AT FIRST SWIPE' }: SlideT
 			</span>
 
 			<div
-				className={`slide-unlock-thumb ${isDragging ? 'is-dragging' : ''}`}
+				className={`slide-unlock-thumb ${isDragging ? 'is-dragging' : ''} ${unlocked ? 'is-unlocked' : ''}`}
 				style={{
 					transform: `translateX(-${dragX}px)`,
-					transition: isDragging ? 'none' : 'transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1)',
+					transition: isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1)',
 				}}
 				onPointerDown={handlePointerDown}
 				onPointerMove={handlePointerMove}
 				onPointerUp={handlePointerEnd}
 				onPointerCancel={handlePointerEnd}
 			>
-				<ChevronLeft size={22} className="slide-unlock-icon" />
+				<ChevronLeft size={24} className="slide-unlock-icon" />
 			</div>
 		</div>
 	);

@@ -1,5 +1,5 @@
 export function loader(){return new Response(`
-const CACHE='lovestruck-v3';
+const CACHE='lovestruck-v4';
 const MAX_AGE=24*60*60*1000; // 1 day in ms
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(['/','/manifest.webmanifest','/app-icon.svg'])).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));});

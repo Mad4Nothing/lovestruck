@@ -1,10 +1,25 @@
+import { useState } from 'react';
 import { config } from '@/lib/quiz-config';
 import { SlideToUnlock } from '@/components/home/slide-to-unlock';
 
-export function Splash({ onStart }: { onStart: () => void }) {
+interface SplashProps {
+	onUnlockStart?: () => void;
+	onStart: () => void;
+}
+
+export function Splash({ onUnlockStart, onStart }: SplashProps) {
 	const { splashVideo } = config;
+	const [isUnlocking, setIsUnlocking] = useState(false);
+
+	const handleUnlock = () => {
+		if (isUnlocking) return;
+		setIsUnlocking(true);
+		onUnlockStart?.();
+		setTimeout(onStart, 550);
+	};
+
 	return (
-		<section className="splash">
+		<section className={`splash ${isUnlocking ? 'unlocking' : ''}`}>
 			<div className="splash-bg" aria-hidden="true">
 				<img
 					className="splash-poster"
@@ -35,7 +50,7 @@ export function Splash({ onStart }: { onStart: () => void }) {
 				<p className="splash-sub">Find your lip soulmate.</p>
 
 				<div className="splash-foot">
-					<SlideToUnlock onUnlock={onStart} text="LOVE AT FIRST SWIPE" />
+					<SlideToUnlock onUnlock={handleUnlock} text="LOVE AT FIRST SWIPE" />
 				</div>
 			</div>
 		</section>
