@@ -987,6 +987,12 @@ h1>span:first-child {
 	margin-bottom: 0
 }
 
+.love-note>p.result-body {
+	font: italic 17px/1.55 Georgia, serif;
+	color: var(--ink);
+	margin: 10px 0 0;
+}
+
 .text-button {
 	min-height: 48px;
 	text-decoration: underline;
