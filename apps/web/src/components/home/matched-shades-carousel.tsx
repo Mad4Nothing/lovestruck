@@ -43,12 +43,9 @@ export function MatchedShadesCarousel({ shades, offline = false }: MatchedShades
 	const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
 		touchStartPos.current = { x: e.clientX, y: e.clientY };
 		isSwipingHorizontal.current = null;
-		setIsDragging(true);
+		setIsDragging(false);
 		dragStartTime.current = Date.now();
 		currentDragX.current = 0;
-		try {
-			e.currentTarget.setPointerCapture(e.pointerId);
-		} catch { }
 	};
 
 	const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -60,6 +57,10 @@ export function MatchedShadesCarousel({ shades, offline = false }: MatchedShades
 			if (Math.abs(dx) > 7 || Math.abs(dy) > 7) {
 				if (Math.abs(dx) > Math.abs(dy)) {
 					isSwipingHorizontal.current = true;
+					setIsDragging(true);
+					try {
+						e.currentTarget.setPointerCapture(e.pointerId);
+					} catch { }
 				} else {
 					isSwipingHorizontal.current = false;
 					setIsDragging(false);

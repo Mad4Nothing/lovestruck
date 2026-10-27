@@ -19,7 +19,7 @@ export function ResultScreen({result,offline,onRetake}:{result:QuizResult;offlin
     <p className="eyebrow">Your love note</p>
     <p>{copy.note}</p>
    </div>
-   <button type="button" className="primary retake" onClick={onRetake}>Retake the test</button>
+   <button id="retake-quiz-btn" type="button" className="primary retake" onClick={onRetake} aria-label="Retake the quiz">Retake the test</button>
    {config.footerNote&&<p>{config.footerNote}</p>}
   </section>
  );
