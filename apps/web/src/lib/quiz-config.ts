@@ -12,7 +12,7 @@ export const config = {
   */
  splashVideo:{
   src:'/splash-bg.mp4',
-  poster:'/splash-bg.jpg',
+  poster:'/splash-bg.png',
  },
 };
 export function shopUrl(shade:{id:string;sku:number|null}) {
