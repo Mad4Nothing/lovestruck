@@ -101,7 +101,7 @@ export function QuestionScreen({
   };
 
   return (
-    <section className="question-screen">
+    <section className={`question-screen question-step-${step + 1}`}>
       <div className="question-nav">
         <button className="back" onClick={onBack}>
           <ArrowLeft size={17} /> Back
